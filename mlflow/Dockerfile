@@ -1,6 +1,5 @@
-FROM continuumio/miniconda3
-RUN apt-get update && apt-get install -y git
+FROM python:3.10
 
-RUN pip install mlflow psycopg2-binary pymysql boto3   # comment out boto3 if not using AWS
+COPY requirements.txt /tmp/requirements.txt
 
-RUN cd /home && git clone https://github.com/mlflow/mlflow-example.git
+RUN pip install -r /tmp/requirements.txt
