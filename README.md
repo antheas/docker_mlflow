@@ -121,8 +121,7 @@ Use whichever you prefer.
 The keys for the SSL connection are placed on the cert folder and you can replace
 them with your own.
 
-The certificate generated has a wildcard in the common name and in the subjectAltName 
-(for domains), so you can use it with any domain you like.
+The cert will support the domain names and IPs you specified in `.env`.
 Just point `MLFLOW_TRACKING_SERVER_CERT_PATH` to `nginx.crt` and the `https` connection
 will be secured.
 However, IP wildcards are not supported, so to use an IP you will either need to 
@@ -133,6 +132,14 @@ use your own certificate or modify `./nginx/gen_key.sh`.
 > Consider using HTTPS with `MLFLOW_TRACKING_INSECURE_TLS` or `MLFLOW_TRACKING_SERVER_CERT_PATH`.
 
 ### Client Set-up
+First, you need to add the host keys of the artifact server to the `known_hosts`
+file (change port and domain to your own):
+```bash
+ssh-keyscan -H -p 23 yourdomain.com >> ~/.ssh/known_hosts
+```
+
+Then, launch your python code while specifying the tracking server using environment
+variables.
 Below is an example of a bash file you could use to set the environment variables
 for your client using SSL.
 ```bash

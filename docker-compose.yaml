@@ -45,6 +45,8 @@ services:
       - "HTTP_PASS=${MLFLOW_SERVER_PASS}"
       - "CUID=${DOCKER_UID}"
       - "CGID=${DOCKER_GID}"
+      - "CCN=${MLFLOW_SERVER_SSL_CN}"
+      - "CSAN=${MLFLOW_SERVER_SSL_SAN}"
   sftp:
     image: 'atmoz/sftp'
     volumes:
