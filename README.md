@@ -130,3 +130,16 @@ certificate or modify `./nginx/gen_key.sh`.
 > By using the HTTP protocol, so it's trivial for a MITM to steal your credentials
 
 > Consider using HTTPS with `MLFLOW_TRACKING_INSECURE_TLS` or `MLFLOW_TRACKING_SERVER_CERT_PATH`.
+
+### Client Set-up
+Below is an example of a bash file you could use to set the environment variables
+for your client using SSL.
+```bash
+export MLFLOW_TRACKING_URI=https://127.0.0.1
+export MLFLOW_TRACKING_USERNAME=mlflow
+export MLFLOW_TRACKING_PASSWORD=12345
+export MLFLOW_TRACKING_SERVER_CERT_PATH=./cert/nginx.crt
+# export MLFLOW_TRACKING_INSECURE_TLS=true
+
+python flow.py
+```
