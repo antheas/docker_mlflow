@@ -9,6 +9,7 @@ to your liking.
 The configuration uses volume binds, so the backend and artifact stores use
 local system directories (by default `./artifacts` and `./backend`).
 As a result, this set up is completely portable.
+
 Moving servers? Just transfer this folder to the new one.
 
 ### Credits
@@ -122,10 +123,10 @@ them with your own.
 
 The certificate generated has a wildcard in the common name and in the subjectAltName 
 (for domains), so you can use it with any domain you like.
-Just point `MLFLOW_TRACKING_SERVER_CERT_PATH` to nginx.crt and the https connection
+Just point `MLFLOW_TRACKING_SERVER_CERT_PATH` to `nginx.crt` and the `https` connection
 will be secured.
-However, ip wildcards are not supported, so you will either need to use your own
-certificate or modify `./nginx/gen_key.sh`.
+However, IP wildcards are not supported, so to use an IP you will either need to 
+use your own certificate or modify `./nginx/gen_key.sh`.
 
 > By using the HTTP protocol, so it's trivial for a MITM to steal your credentials
 
