@@ -16,7 +16,9 @@ services:
     command:
       - sh
       - -c
-      - mlflow server 
+      - ssh-keyscan -H -p ${MLFLOW_ARTIFACT_PORT} ${MLFLOW_ARTIFACT_URI} | tee known_hosts
+        ;
+        mlflow server 
         --port 5000 
         --host 0.0.0.0
         --backend-store-uri sqlite:///mlruns.db
