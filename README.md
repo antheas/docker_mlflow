@@ -1,8 +1,8 @@
 # Docker MLflow: A docker script which sets up an all-in-one MLflow server
 A docker-compose setup that sets up a backend MLflow server (sqlite) and artifact 
 store (SFTP) on the directories you specify.
-An nginx proxy is provided which adds HTTP Basic Auth and the sFTP likewise requires
-authentication, which makes it safe(ish) to expose them to the clearnet. 
+An nginx proxy is provided which adds HTTP Basic Auth with SSL and the sFTP 
+likewise requires authentication, which makes it safe(ish) to expose them to the clearnet. 
 
 A `.env.example` file is provided which allows you to quickly set up a configuration
 to your liking.
@@ -19,6 +19,9 @@ It also implements some best practices from web development for using docker.
 
 HTTP Basic Auth is now provided by default by nginx and the username and password
 are set using the `.env` file.
+NGINX also forwards an https port and a self signed certificate is generated for you.
+By placing that certificate in the client and setting the proper environment variable
+you can use mlflow securely with TLS.
 
 I do not see the reason for using PostgreSQL for a server used by one researcher.
 So sqlite is used for the backend.
@@ -40,6 +43,14 @@ It should work as is.
 cp .env.example .env
 ```
 
+### Docker UID
+If you change the UID/GID of docker through `.env` (so you can modify files 
+without root), you'll have to create the bind directories yourself, because 
+docker will create them using the root user.
+```bash
+mkdir -p artifacts backend cert
+```
+
 ### Domains
 If you'd rather use a domain name instead of an IP to make it easier to remember
 when setting up machines and you don't have one, check out [Duck DNS](https://duckdns.org)
@@ -47,8 +58,7 @@ and [Freenom](https://www.freenom.com/). You can get `.tk` domains from freedom 
 `.duck-dns.org` from Duck DNS (which can auto-update), no credit card required.
 Place your domain in `MLFLOW_ARTIFACT_URI` and use it when specifying the server in clients.
 
-[Cloudflare](http://cloudflare.com/) is a good free DNS service that can also proxy
-the MLflow traffic and shield it with `SSL`.
+[Cloudflare](http://cloudflare.com/) is a good free DNS service if using Freenom.
 
 ### Firewall
 We will be exposing ports on the host machine.
@@ -91,21 +101,32 @@ docker-compose up flow
 ```
 
 ### Firewall Continued
-You can now allow traffic to the secured backend port and the sftp
-port.
+You can now allow traffic to the secured backend port and the sftp port.
+
 ```bash
 sudo ufw allow 23
 sudo ufw allow 80
+# or
+sudo ufw allow 443
 ```
 If you are launching a VM behind a modern cloud, you will also have to modify
 the security group and forward the ports there as well
 (the ssh port is forwarded by default).
 
-> NGINX uses the HTTP protocol, so it's trivial for a MITM to steal your credentials
+### Using SSL
+NGINX forwards the backend using HTTP Basic Auth to ports 80 (HTTP) and
+443 (HTTPS).
+Use whichever you prefer.
+The keys for the SSL connection are placed on the cert folder and you can replace
+them with your own.
 
-For now, SSL is a TODO. Let's encrypt provides certificates for free but setting
-it up is a pain.
-You can also proxy through cloudflare, with the caveat that traffic from cloudflare
-to your server is unprotected.
-The sftp domain should not be proxied, however.
-In this case, you would use different ones for both.
+The certificate generated has a wildcard in the common name and in the subjectAltName 
+(for domains), so you can use it with any domain you like.
+Just point `MLFLOW_TRACKING_SERVER_CERT_PATH` to nginx.crt and the https connection
+will be secured.
+However, ip wildcards are not supported, so you will either need to use your own
+certificate or modify `./nginx/gen_key.sh`.
+
+> By using the HTTP protocol, so it's trivial for a MITM to steal your credentials
+
+> Consider using HTTPS with `MLFLOW_TRACKING_INSECURE_TLS` or `MLFLOW_TRACKING_SERVER_CERT_PATH`.

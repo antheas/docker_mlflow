@@ -1,2 +1,5 @@
-mkdir -p /etc/apache2
-printf "${HTTP_USER}:$(openssl passwd -crypt ${HTTP_PASS})\n" > /etc/apache2/.htpasswd
+if [ ! -f "/cert/.htpasswd" ]; then
+  mkdir -p /cert
+  printf "${HTTP_USER}:$(openssl passwd -crypt ${HTTP_PASS})\n" > /cert/.htpasswd
+  chown -R $CUID:$CGID /cert
+fi

@@ -28,6 +28,7 @@ services:
     restart: always
     ports:
       - "${MLFLOW_SERVER_PORT_AUTH}:80"
+      - "${MLFLOW_SERVER_PORT_AUTH_SSL}:443"
     networks:
       - default
     depends_on:
@@ -35,11 +36,15 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/mlflow.conf:/etc/nginx/sites-enabled/mlflow.conf
+      - ./nginx/mlflow_ssl.conf:/etc/nginx/sites-enabled/mlflow_ssl.conf
       - ./nginx/gen_htaccess.sh:/docker-entrypoint.d/90_gen_htaccess.sh
+      - ./nginx/gen_key.sh:/docker-entrypoint.d/91_gen_key.sh
+      - ${MLFLOW_SSL_CERT_DIR}:/cert
     environment:
       - "HTTP_USER=${MLFLOW_SERVER_USER}"
       - "HTTP_PASS=${MLFLOW_SERVER_PASS}"
-
+      - "CUID=${DOCKER_UID}"
+      - "CGID=${DOCKER_GID}"
   sftp:
     image: 'atmoz/sftp'
     volumes:
