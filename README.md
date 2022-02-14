@@ -12,31 +12,6 @@ As a result, this set up is completely portable.
 
 Moving servers? Just transfer this folder to the new one.
 
-### Credits
-This repository extends Andy Ganse's 
-[aganse/docker_mlflow_db](https://github.com/aganse/docker_mlflow_db)
-repository by simplifying it and making it ready to use.
-It also implements some best practices from web development for using docker.
-
-HTTP Basic Auth is now provided by default by nginx and the username and password
-are set using the `.env` file.
-NGINX also forwards an https port and a self signed certificate is generated for you.
-By placing that certificate in the client and setting the proper environment variable
-you can use mlflow securely with TLS.
-
-I do not see the reason for using PostgreSQL for a server used by one researcher.
-So sqlite is used for the backend.
-As I use MLflow I might change my mind though.
-
-Old credits:
-Originally based on [Guillaume Androz's 10-Jan-2020 Toward-Data-Science post,
-"Deploy MLflow with docker compose"]
-(https://towardsdatascience.com/deploy-mlflow-with-docker-compose-8059f16b6039),
-with some changes to:
-* replace AWS usage with local mapping for artifact store
-* replace mysql with postgresql and other options.
-* optionally apply htpasswd access control to mlflow website via nginx frontend
-
 ## Installation
 Start by copying `.env.example` to `.env` and modifying it to taste.
 It should work as is.
@@ -151,3 +126,28 @@ export MLFLOW_TRACKING_SERVER_CERT_PATH=./cert/nginx.crt
 
 python flow.py
 ```
+
+## Credits
+This repository extends Andy Ganse's 
+[aganse/docker_mlflow_db](https://github.com/aganse/docker_mlflow_db)
+repository by simplifying it and making it ready to use.
+It also implements some best practices from web development for using docker.
+
+HTTP Basic Auth is now provided by default by nginx and the username and password
+are set using the `.env` file.
+NGINX also forwards an https port and a self signed certificate is generated for you.
+By placing that certificate in the client and setting the proper environment variable
+you can use mlflow securely with TLS.
+
+I do not see the reason for using PostgreSQL for a server used by one researcher.
+So sqlite is used for the backend.
+As I use MLflow I might change my mind though.
+
+Old credits:
+Originally based on [Guillaume Androz's 10-Jan-2020 Toward-Data-Science post,
+"Deploy MLflow with docker compose"]
+(https://towardsdatascience.com/deploy-mlflow-with-docker-compose-8059f16b6039),
+with some changes to:
+* replace AWS usage with local mapping for artifact store
+* replace mysql with postgresql and other options.
+* optionally apply htpasswd access control to mlflow website via nginx frontend
