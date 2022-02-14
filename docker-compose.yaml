@@ -16,7 +16,9 @@ services:
     command:
       - sh
       - -c
-      - ssh-keyscan -H -p ${MLFLOW_ARTIFACT_PORT} ${MLFLOW_ARTIFACT_URI} | tee known_hosts
+      - sleep 5
+        ;
+        ssh-keyscan -H -p ${MLFLOW_ARTIFACT_PORT} ${MLFLOW_ARTIFACT_URI} | tee known_hosts
         ;
         mlflow server 
         --port 5000 
@@ -53,8 +55,13 @@ services:
     image: 'atmoz/sftp'
     volumes:
       - ${MLFLOW_ARTIFACT_DIR}:/home/${MLFLOW_ARTIFACT_USER}/artifacts
+      - ${MLFLOW_SSL_CERT_DIR}:/cert
+      - ./sftp/copy_host_keys.sh:/etc/sftp.d/00_copy_host_keys.sh
     ports:
       - "${MLFLOW_ARTIFACT_PORT}:22"
+    environment:
+      - "CUID=${DOCKER_UID}"
+      - "CGID=${DOCKER_GID}"
     command: ${MLFLOW_ARTIFACT_USER}:${MLFLOW_ARTIFACT_PASS}:${DOCKER_UID}:${DOCKER_GID}:artifacts
 
 networks:
