@@ -8,7 +8,7 @@ else
   echo "Saving new ssh_host_ed25519_key..."
   cp /etc/ssh/ssh_host_ed25519_key /cert/ssh_host_ed25519_key
   cp /etc/ssh/ssh_host_ed25519_key.pub /cert/ssh_host_ed25519_key.pub
-  chown $CUID:$CGID /cert/ssh_host_ed25519_key /cert/ssh_host_ed25519_key.pub
+  chown $CUID:$CGID /cert/ssh_host_ed25519_key /cert/ssh_host_ed25519_key.pub || true
 fi
 
 if [ -f /cert/ssh_host_rsa_key ]; then
@@ -20,5 +20,5 @@ else
   echo "Saving new ssh_host_rsa_key..."
   cp /etc/ssh/ssh_host_rsa_key /cert/ssh_host_rsa_key
   cp /etc/ssh/ssh_host_rsa_key.pub /cert/ssh_host_rsa_key.pub
-  chown $CUID:$CGID /cert/ssh_host_rsa_key /cert/ssh_host_rsa_key.pub
+  chown $CUID:$CGID /cert/ssh_host_rsa_key /cert/ssh_host_rsa_key.pub || true
 fi
