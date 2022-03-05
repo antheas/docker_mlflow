@@ -1,4 +1,13 @@
 # Docker MLflow: A docker script which sets up an all-in-one MLflow server
+
+> Update: there's a new version of mlflow that supports a built-in artifact server.
+> However, it is currently bugged. When using a local directory, the web ui artifact
+> browser doesn't work and when using a proxy with NGINX, the client sets the 
+> artifact URI port to None.
+> It also doesn't create the default experiment.
+
+> When it's stable this repository will be updated to use the built-in server.
+
 A docker-compose setup that sets up a backend MLflow server (sqlite) and artifact 
 store (SFTP) on the directories you specify.
 An nginx proxy is provided which adds HTTP Basic Auth with SSL and the sFTP 
